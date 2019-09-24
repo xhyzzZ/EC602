@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+# Copyright 2019 Haoyu Xu xhy@bu.edu
+from sys import argv
+from os import listdir, stat
+
+# key value pair to store time:filename
+file = []
+# all the files existed in current directory
+directory = listdir()
+for i in range(0, len(directory)):
+	file.append([stat(directory[i]).st_mtime, directory[i]])
+# sort by key, which is the file's recent time, using lambda
+file.sort(key = lambda x : x[0])
+
+for i in range(0, int(argv[1])):
+	print(file[i][1])
