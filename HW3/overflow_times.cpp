@@ -1,22 +1,23 @@
 // Copyright 2019 Haoyu Xu xhy@bu.edu
-#include <iostream>
+#include <cmath>
 #include <cstdint>
 #include <ctime>
-#include <cmath>
+#include <iostream>
+
 int main() {
-    clock_t start_clock, end_clock;
-    uint16_t m = 1;
+    clock_t start, end;
+    uint16_t min = 1;
     // start timing
-    start_clock = clock();
-    while (m > 0) {
-    	m++;
+    start = clock();
+    while (min > 0) {
+        min++;
     }
     // time ends here
-    end_clock = clock();
-    double microseconds = (double)(1.0e6) * (end_clock - start_clock) / CLOCKS_PER_SEC;
+    end = clock();
+    double microseconds = (double) (1.0e6) * (end - start) / CLOCKS_PER_SEC;
     double nanoseconds = (1.0e3) * microseconds * (pow(2.0, 8)) / (pow(2.0, 16));
     double seconds = microseconds / (1.0e6) * (pow(2, 32)) / (pow(2, 16));
-    double years = microseconds / (1.0e6) * (pow(2, 32)) / (pow(2, 16)) / (3600 * 24 * 365) * (pow(2, 64)) / (pow(2, 32));
+    double years = microseconds / (1.0e6) * (pow(2, 32)) / (3600 * 24 * 365) * (pow(2, 64)) / (pow(2, 16)) / (pow(2, 32));
 
     std::cout << "estimated int8 time (nanoseconds):  "
               << nanoseconds << std::endl;
