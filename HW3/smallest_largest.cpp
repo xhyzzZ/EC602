@@ -1,27 +1,32 @@
 // Copyright 2019 Haoyu Xu xhy@bu.edu
 double largest_double() {
-	double a = 2;
-	int x = 2;
-	for (int i = 0; i < 1023; i++) {
-		a *= x;
-	}
-	double b = 2;
-	double y = 0.5;
-	for (int i = 0; i < 52; i++) {
-		b *= y;
-	}
-	
-	return a * (2 - b) - 1;
+	double res;
+	long int *pointer = (long int*) &res;
+	*pointer = 0x7fefffffffffffff;
+
+	return res;
 }
 
 double smallest_double() {
+	double res;
+	long int *pointer = (long int*) &res;
+	*pointer = 0x1;
 
+	return res;
 }
   
 float largest_single() {
+	float res;
+	int *pointer = (int*) &res;
+	*pointer = 0x7f7fffff;
 
+	return res;
 }
 
 float smallest_single() {
+	float res;
+	int *pointer = (int*) &res;
+	*pointer = 0x00000001;
 
+	return res;
 }
