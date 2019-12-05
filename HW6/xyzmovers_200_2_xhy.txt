@@ -1,0 +1,69 @@
+Here are the initial sphere
+universe radius 200.0
+max collisions 2
+zmover m=20.0 R=1.0 p=(0.0, 0.0, 10.0) v=(0.0, 0.0, 1.5) bounces=0
+ymover m=20.0 R=2.0 p=(0.0, 10.0, 0.0) v=(0.0, 2.0, 0.0) bounces=0
+xmover m=20.0 R=3.0 p=(10.0, 0.0, 0.0) v=(0.5, 0.0, 0.0) bounces=0
+energy: 65.0
+momentum: (10.0, 40.0, 30.0)
+
+Here are the events.
+
+time of event: 94.0
+reflecting ymover
+zmover m=20.0 R=1.0 p=(0.0, 0.0, 151.0) v=(0.0, 0.0, 1.5) bounces=0
+ymover m=20.0 R=2.0 p=(0.0, 198.0, 0.0) v=(0.0, -2.0, 0.0) bounces=1
+xmover m=20.0 R=3.0 p=(57.0, 0.0, 0.0) v=(0.5, 0.0, 0.0) bounces=0
+energy: 65.0
+momentum: (10.0, -40.0, 30.0)
+
+
+time of event: 126.0
+reflecting zmover
+zmover m=20.0 R=1.0 p=(0.0, 0.0, 199.0) v=(0.0, 0.0, -1.5) bounces=1
+ymover m=20.0 R=2.0 p=(0.0, 134.0, 0.0) v=(0.0, -2.0, 0.0) bounces=1
+xmover m=20.0 R=3.0 p=(73.0, 0.0, 0.0) v=(0.5, 0.0, 0.0) bounces=0
+energy: 65.0
+momentum: (10.0, -40.0, -30.0)
+
+
+time of event: 292.0
+reflecting ymover
+zmover m=20.0 R=1.0 p=(0.0, 0.0, -50.0) v=(0.0, 0.0, -1.5) bounces=1
+ymover m=20.0 R=2.0 p=(0.0, -198.0, 0.0) v=(0.0, 2.0, 0.0) bounces=2
+xmover m=20.0 R=3.0 p=(156.0, 0.0, 0.0) v=(0.5, 0.0, 0.0) bounces=0
+energy: 65.0
+momentum: (10.0, 40.0, -30.0)
+
+
+time of event: 374.0
+reflecting xmover
+zmover m=20.0 R=1.0 p=(0.0, 0.0, -173.0) v=(0.0, 0.0, -1.5) bounces=1
+ymover m=20.0 R=2.0 p=(0.0, -34.0, 0.0) v=(0.0, 2.0, 0.0) bounces=2
+xmover m=20.0 R=3.0 p=(197.0, 0.0, 0.0) v=(-0.5, 0.0, 0.0) bounces=1
+energy: 65.0
+momentum: (-10.0, 40.0, -30.0)
+
+
+time of event: 391.3333333333333
+reflecting zmover
+zmover m=20.0 R=1.0 p=(0.0, 0.0, -199.0) v=(0.0, 0.0, 1.5) bounces=2
+ymover m=20.0 R=2.0 p=(0.0, 0.6666666666666643, 0.0) v=(0.0, 2.0, 0.0) bounces=2
+xmover m=20.0 R=3.0 p=(188.33333333333334, 0.0, 0.0) v=(-0.5, 0.0, 0.0) bounces=1
+energy: 65.0
+momentum: (-10.0, 40.0, 30.0)
+
+
+disappear ymover
+
+disappear zmover
+
+time of event: 1162.0
+reflecting xmover
+xmover m=20.0 R=3.0 p=(-197.0, 0.0, 0.0) v=(0.5, 0.0, 0.0) bounces=2
+energy: 2.5
+momentum: (10.0, 0.0, 0.0)
+
+
+disappear xmover
+

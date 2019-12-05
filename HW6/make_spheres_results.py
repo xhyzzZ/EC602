@@ -13,7 +13,7 @@ compare your results with mine.
 
 """
 
-myid = "jbc"
+myid = "xhy"
 
 from subprocess import run, PIPE
 
@@ -36,7 +36,7 @@ for basename,radius,N in spheres_tests:
     with open(f'{basename}.txt') as g:
         text = g.read()
 
-    T = run(['python','spheres.py',str(radius),str(N)],input=text,stdout=PIPE,
+    T = run(['spheres',str(radius),str(N)],input=text,stdout=PIPE,
           universal_newlines=True)
     
     with open(f"{basename}_{radius}_{N}_{myid}.txt",'w') as out:
