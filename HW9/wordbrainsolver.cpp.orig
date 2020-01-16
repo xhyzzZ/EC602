@@ -53,35 +53,48 @@ bool dfs(matrix &puzzle, int rowIndex, int colIndex, TrieNode *cur,
   if (!cur->word.empty()) {
     puzzle[rowIndex][colIndex] = '#';
     if (isLast)
-      res.emplace_back(cur->word, matrix());
+      res.push_back(pair<string, matrix>(cur->word, matrix()));
     else
-      res.emplace_back(cur->word, puzzle);
+      res.push_back(pair<string, matrix>(cur->word, puzzle));
     puzzle[rowIndex][colIndex] = puzzleChar;
     return true;
   }
 
-  // search adjacent in puzzle
+  // search adjacent cells in puzzle
+  bool returnValue = false;
   puzzle[rowIndex][colIndex] = '#';
-  bool flag = false;
+  // for (int dRow = (rowIndex > 0 ? -1 : 0); dRow <=
+  //      (rowIndex < rowSize - 1 ? 1 : 0); dRow++) {
+  //   for (int dColumn = (colIndex > 0 ? -1 : 0); dColumn <=
+  //        (colIndex < colSize - 1 ? 1 : 0); dColumn++) {
+  //     if (dRow != 0 || dColumn != 0) {
+  //       bool search = dfs(puzzle, rowIndex + dRow, colIndex + dColumn, cur,
+  //                         target, targetIndex + 1, res, isLast);
+  //       returnValue |= search;
+  //     }
+  //   }
+  // }
   for (int r = -1; r <= 1; r++) {
     for (int c = -1; c <= 1; c++) {
       if (r != 0 || c != 0) {
-        int newRow = rowIndex + r, newCol = colIndex + c;
+        int newRow = rowIndex + r;
+        int newCol = colIndex + c;
         if (newRow < 0 || newRow >= puzzle.size() || newCol < 0
             || newCol >= puzzle.size()) continue;
-        bool search = dfs(puzzle, newRow, newCol, cur, target,
+        bool search = dfs(puzzle, newRow, newCol, cur, target, 
                           targetIndex + 1, res, isLast);
-        flag |= search;
+        returnValue |= search;
       }
     }
   }
   puzzle[rowIndex][colIndex] = puzzleChar;
-  return flag;
+  return returnValue;
 }
-// remove elements in puzzle
-void remove(matrix &puzzle) {
+// drop elements in puzzle in order to fill all blank space
+void drop(matrix &puzzle) {
   for (int colIndex = 0; colIndex < colSize; colIndex++) {
-    int i = rowSize - 1, j = rowSize - 1;
+    int i = rowSize - 1;
+    int j = rowSize - 1;
     while (true) {
       while (i >= 0 && puzzle[i][colIndex] != '#') {
         i--;
@@ -90,11 +103,11 @@ void remove(matrix &puzzle) {
       while (j >= 0 && puzzle[j][colIndex] == '#') {
         j--;
       }
-      if (j >= 0) {
+      if (j < 0) {
+        break;
+      } else {
         puzzle[i][colIndex] = puzzle[j][colIndex];
         puzzle[j][colIndex] = '#';
-      } else {
-        break;
       }
     }
   }
@@ -102,58 +115,61 @@ void remove(matrix &puzzle) {
 
 bool solve(matrix &puzzle, const vector<TrieNode*> &triesBucket,
            const vector<string> &targets, vector<vector<string>> &res) {
-  bool flag = false;
-  rowSize = puzzle.size(), colSize = puzzle.size();
+  // init the state of current puzzle solver
+  bool returnValue = false;
+  rowSize = puzzle.size();
+  colSize = puzzle.size();
   int puzzleSize = rowSize * colSize;
   int targetNum = targets.size();
   vector<int> targetLength;
-  targetLength.reserve(targets.size());
   for (const string &s : targets) targetLength.push_back(s.size());
   if (triesBucket[targetLength[0] - 1] == nullptr) return false;
   typedef pair<vector<string>, matrix> record;
   queue<record> queue;
-  vector<pair<string, matrix>> matched;
+  vector<pair<string, matrix>> matchingResults;
   for (int i = 0; i < puzzleSize; i++) {
     if (dfs(puzzle, i / colSize, i % colSize,
             triesBucket[targetLength[0] - 1], targets[0], 0,
-            matched, targetNum == 1)) {
-      for (const auto &match : matched) {
-        queue.push(record(vector<string> (1, match.first), match.second));
+            matchingResults, targetNum == 1)) {
+      for (const auto &match : matchingResults) {
+        queue.push(record(vector<string>
+                          (1, match.first), match.second));
       }
-      matched.clear();
+      matchingResults.clear();
     }
   }
 
+  // start loop -- the same order as bfs
   while (!queue.empty()) {
     int curTargetNum = queue.front().first.size();
     if (curTargetNum == targetNum) {
       res.push_back(queue.front().first);
-      flag = true;
+      returnValue = true;
     } else {
       if (triesBucket[targetLength[curTargetNum] - 1] == nullptr) {
         queue.pop();
         continue;
       }
-      remove(queue.front().second);
-      vector<pair<string, matrix>> matched;
+      drop(queue.front().second);
+      vector<pair<string, matrix>> matchingResults;
       for (int i = 0; i < puzzleSize; i++) {
         if (dfs(queue.front().second, i / colSize, i % colSize,
                 triesBucket[targetLength[curTargetNum] - 1],
-                targets[curTargetNum], 0, matched,
+                targets[curTargetNum], 0, matchingResults,
                 curTargetNum == targetNum - 1)) {
-          for (const auto &match : matched) {
+          for (const auto &match : matchingResults) {
             vector<string> matchingWords(queue.front().first);
             matchingWords.push_back(match.first);
             queue.push(record(matchingWords, match.second));
           }
-          matched.clear();
+          matchingResults.clear();
         }
       }
     }
     queue.pop();
   }
 
-  return flag;
+  return returnValue;
 }
 
 int main(int argc, char *argv[]) {
@@ -172,12 +188,12 @@ int main(int argc, char *argv[]) {
   bool hasBuildLarge = false;
   string word;
   while (smallFS >> word) {
-    int index = word.size() - 1;
-    if (smallTriesBucket[index] == nullptr) {
-      smallTriesBucket[index] = new TrieNode();
-      smallTriesBucket[index]->insert(word);
+    int bucketIndex = word.size() - 1;
+    if (smallTriesBucket[bucketIndex] == nullptr) {
+      smallTriesBucket[bucketIndex] = new TrieNode();
+      smallTriesBucket[bucketIndex]->insert(word);
     } else {
-      smallTriesBucket[index]->insert(word);
+      smallTriesBucket[bucketIndex]->insert(word);
     }
   }
 
@@ -186,29 +202,29 @@ int main(int argc, char *argv[]) {
   while (getline(cin, line)) {
     if (line.find('*') != string::npos) {
       vector<string> targetList;
-      std::istringstream in(line);
+      std::istringstream ss(line);
       string word;
-      while (in >> word) targetList.push_back(word);
-      vector<vector<string>> solved;
-      if (!solve(puzzle, smallTriesBucket, targetList, solved)) {
+      while (ss >> word) targetList.push_back(word);
+      vector<vector<string>> solvedList;
+      if (!solve(puzzle, smallTriesBucket, targetList, solvedList)) {
         if (!hasBuildLarge) {
           ifstream largeFS(largeName);
           if (!largeFS.is_open()) return 2;
           while (largeFS >> word) {
-            int index = word.size() - 1;
-            if (largeTriesBucket[index] == nullptr) {
-              largeTriesBucket[index] = new TrieNode();
-              largeTriesBucket[index]->insert(word);
+            int bucketIndex = word.size() - 1;
+            if (largeTriesBucket[bucketIndex] == nullptr) {
+              largeTriesBucket[bucketIndex] = new TrieNode();
+              largeTriesBucket[bucketIndex]->insert(word);
             } else {
-              largeTriesBucket[index]->insert(word);
+              largeTriesBucket[bucketIndex]->insert(word);
             }
           }
           hasBuildLarge = true;
         }
-        solve(puzzle, largeTriesBucket, targetList, solved);
+        solve(puzzle, largeTriesBucket, targetList, solvedList);
       }
       set<string> answerSet;
-      for (const auto &answer : solved) {
+      for (const auto &answer : solvedList) {
         std::stringstream ss;
         for (int i = 0; i < answer.size() - 1; i++)
           ss << answer[i] << " ";
@@ -222,8 +238,8 @@ int main(int argc, char *argv[]) {
     } else if (line.empty()) {
       break;
     } else {
-      vector<char> row(line.begin(), line.end());
-      puzzle.push_back(row);
+      vector<char> puzzleRow(line.begin(), line.end());
+      puzzle.push_back(puzzleRow);
     }
   }
   return 0;
